@@ -1,0 +1,23 @@
+{
+  "name": "fcc-voting-app",
+  "version": "1.0.0",
+  "description": "Voting app for the freeCodeCamp challange.",
+  "scripts": {
+    "start": "node server/server.js",
+    "heroku-postbuild": "cd react-ui/ && npm install --only=dev && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sja31dev/fcc-voting-app.git"
+  },
+  "author": "Stephen Armstrong",
+  "license": "UNLICENSED",
+  "private": true,
+  "bugs": {
+    "url": "https://github.com/sja31dev/fcc-voting-app/issues"
+  },
+  "homepage": "https://github.com/sja31dev/fcc-voting-app#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}

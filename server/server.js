@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const passport = require('passport');
 const session = require('express-session');
+const MemoryStore = require('memorystore')(session)
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
@@ -76,7 +77,11 @@ app.delete('/api/delete', function(req, res) {
 app.use(session({
   secret: 'iowhefiysdg0wpiej',
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  store: new MemoryStore({
+    checkPeriod: 86400000, // prune expired entries every 24h
+    max: 100 // Maximum 100 entries
+  }),
 }));
 app.use(passport.initialize());
 app.use(passport.session());

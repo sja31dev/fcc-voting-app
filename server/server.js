@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const passport = require('passport');
 const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
@@ -24,6 +25,15 @@ var Schema = mongoose.Schema;
 
 // API
 app.use(bodyParser.json());
+app.get('/api/test', function(req, res) {
+  console.log(req);
+  /*Poll.find(function (err, polls) {
+    if (err) return console.error(err);
+    console.log(polls);
+    res.json({test:"test"});
+  });*/
+  res.json({test:"test"});
+});
 app.get('/api/getpoll', function(req, res) {
   //console.log(req);
   // !!! query a particular poll or get all or all for one user
@@ -76,13 +86,17 @@ app.delete('/api/delete', function(req, res) {
 app.use(session({
   secret: 'iowhefiysdg0wpiej',
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  store: new MemoryStore({
+    checkPeriod: 86400000, // prune expired entries every 24h
+    max: 100 // Maximum 100 entries
+  }),
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 
 // *** mongoose *** //
-mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
+//mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 
 // ROUTES
 

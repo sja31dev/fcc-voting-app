@@ -96,7 +96,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // *** mongoose *** //
-//mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
+mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 
 // ROUTES
 
@@ -148,11 +148,14 @@ app.get('/test', function(req, res) {
 // END OF USER AAUTHENTICATION
 
 // Static files
-app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
+//app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
 // Remaining requests return the React app
-app.get('*', function(req, res) {
+/*app.get('*', function(req, res) {
   res.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
+});*/
+app.get('*', function(req, res) {
+  res.sendFile(path.resolve(__dirname, 'views', 'index.html'));
 });
 
 app.listen(PORT, function() {

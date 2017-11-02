@@ -3,10 +3,15 @@ const path = require('path');
 const passport = require('passport');
 const session = require('express-session');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 var passportGithub = require('./auth/github');
 var passportTwitter = require('./auth/twitter');
 var passportFacebook= require('./auth/facebook');
+
+var User = require('./models/user');
+var Poll = require('./models/poll');
+
 
 // Get process.env from .env file if it exists
 require('dotenv').config();
@@ -18,9 +23,53 @@ const PORT = process.env.PORT || 5000;
 var Schema = mongoose.Schema;
 
 // API
-app.get('/api', function(req, res) {
-  res.json({"error":"No API functionality defined yet"});
+app.use(bodyParser.json());
+app.get('/api/getpoll', function(req, res) {
+  //console.log(req);
+  // !!! query a particular poll or get all or all for one user
+  if (req.query.q) {
+    Poll.find(function (err, polls) {
+      if (err) return console.error(err);
+      console.log(polls);
+      res.json({test:"getpoll","question":req.query.q});
+    });
+  } else {
+    // Get all polls (or limit to a certain number)
+    Poll.find(function (err, polls) {
+      if (err) return console.error(err);
+      console.log(polls);
+      res.json({test:"getpoll"});
+    });
+  }
 });
+app.put('/api/newpoll', function(req, res) {
+  console.log(req);
+  /*Poll.find(function (err, polls) {
+    if (err) return console.error(err);
+    console.log(polls);
+    res.json({test:"test"});
+  });*/
+  res.json({test:"newpoll","question":req.body.question,"answer":req.body.answer});
+});
+app.put('/api/vote', function(req, res) {
+  console.log(req);
+  /*Poll.find(function (err, polls) {
+    if (err) return console.error(err);
+    console.log(polls);
+    res.json({test:"test"});
+  });*/
+  res.json({test:"vote","question":req.body.question,"answer":req.body.vote});
+});
+app.delete('/api/delete', function(req, res) {
+  console.log(req);
+  /*Poll.find(function (err, polls) {
+    if (err) return console.error(err);
+    console.log(polls);
+    res.json({test:"test"});
+  });*/
+  res.json({test:"delete","question":req.body.question});
+});
+// !!! user is authenticated
 
 // USER AUTHINTICATION
 // express-session and passport middleware
@@ -94,5 +143,4 @@ app.get('*', function(req, res) {
 
 app.listen(PORT, function() {
   console.log(`Listening on port ${PORT}`);
-  console.log(process.env.TWITTER_CALLBACK);
 });

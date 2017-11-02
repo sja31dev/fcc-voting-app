@@ -2,3 +2,5 @@
 node_modules
 # Ignore react directory
 react-ui/build
+# Ignore .env frile
+.env

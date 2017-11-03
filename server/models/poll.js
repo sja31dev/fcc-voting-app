@@ -3,12 +3,14 @@ var Schema = mongoose.Schema;
 
 var User = require('./user');
 
-// create User Schema
+var answer = new Schema({answer: String, votes: { type: Number, default: 0 }}, { _id: false });
+
+// create Poll Schema
 var Poll = new Schema({
   question: String,
-  answer: [{answer: String, votes: Number}],
+  answer: [answer],
   owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 });
 
 
-module.exports = mongoose.model('poll', Poll);
+module.exports = mongoose.model('Poll', Poll);

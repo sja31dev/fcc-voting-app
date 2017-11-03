@@ -31,7 +31,7 @@ passport.use(new GitHubStrategy({
       upsert: true
     };
 
-    // update the user if s/he exists or add a new user
+    // update the user if they exists or add a new user
     User.findOneAndUpdate(searchQuery, updates, options, function(err, user) {
       if(err) {
         return done(err);

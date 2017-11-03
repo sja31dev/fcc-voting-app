@@ -27,57 +27,147 @@ var Schema = mongoose.Schema;
 app.use(bodyParser.json());
 app.get('/api/test', function(req, res) {
   console.log(req);
-  /*Poll.find(function (err, polls) {
-    if (err) return console.error(err);
-    console.log(polls);
-    res.json({test:"test"});
-  });*/
   res.json({test:"test"});
 });
+
+const mapPollToJSON = ((p) => {
+  var answer = p.answer.map((a) => {
+    return {"answer": a.answer, "votes": a.votes};
+  });
+  return {"question": p.question, "answer": answer};
+});
+
 app.get('/api/getpoll', function(req, res) {
-  //console.log(req);
-  // !!! query a particular poll or get all or all for one user
   if (req.query.q) {
-    Poll.find(function (err, polls) {
-      if (err) return console.error(err);
-      console.log(polls);
-      res.json({test:"getpoll","question":req.query.q});
+    Poll.find({"question": req.query.q}, function (err, polls) {
+      if (err) {
+        res.json({"error": "Internal server error"});
+        return console.error(err);
+      }
+      if (polls.length !== 1) {
+        res.json({error:"Poll not found."});
+      } else {
+        res.json(mapPollToJSON(polls[0]));
+      }
     });
   } else {
     // Get all polls (or limit to a certain number)
     Poll.find(function (err, polls) {
-      if (err) return console.error(err);
-      console.log(polls);
-      res.json({test:"getpoll"});
+      if (err) {
+        res.json({"error": "Internal server error"});
+        return console.error(err);
+      }
+      res.json(polls.map((p) => mapPollToJSON(p)));
     });
   }
 });
+
 app.put('/api/newpoll', function(req, res) {
-  console.log(req);
-  /*Poll.find(function (err, polls) {
-    if (err) return console.error(err);
-    console.log(polls);
-    res.json({test:"test"});
-  });*/
-  res.json({test:"newpoll","question":req.body.question,"answer":req.body.answer});
+  if (req.body && req.body.question && req.body.answer) {
+    // !!! Check if the user is authenticated
+
+    // Check if the question was already in the database
+    Poll.find({"question": req.body.question}, function (err, polls) {
+      if (err) {
+        res.json({"error": "Internal server error"});
+        return console.error(err);
+      }
+      console.log(polls);
+      if (polls.length !== 0) {
+        res.json({error:"That question already exists."});
+      } else {
+        var answer = req.body.answer.map((a) => {
+          return {
+            "answer": a,
+            "votes": 0
+          };
+        });
+        var newPoll = new Poll({
+          "question": req.body.question,
+          "answer": answer
+        });
+        newPoll.save(function (err, poll) {
+          if (err) {
+            res.json({"error": "Internal server error"});
+            return console.error(err);
+          }
+          res.json({"question": poll.question, "answer": poll.answer});
+        });
+      }
+    });
+  } else {
+    res.json({error:"Error processing request."});
+  }
 });
+
+app.put('/api/addanswer', function(req, res) {
+/*  console.log(req);*/
+  Poll.findOneAndUpdate(
+    { // conditions
+      "question": req.query.q
+    },
+    { // update
+        "$addToSet": { "answer": {"answer": req.query.a, "votes": 0} }
+    },
+    { // options
+      "new": true // Return the updated document
+    },
+    function (err, poll)
+    {
+      if (err) {
+        res.json({"error": "Internal server error"});
+        return console.error(err);
+      }
+      if (!poll) {
+        res.json({"error": "Question not found."});
+      } else {
+        res.json({"question": poll.question, "answer": poll.answer});
+      }
+    }
+  );
+});
+
 app.put('/api/vote', function(req, res) {
-  console.log(req);
-  /*Poll.find(function (err, polls) {
-    if (err) return console.error(err);
-    console.log(polls);
-    res.json({test:"test"});
-  });*/
-  res.json({test:"vote","question":req.body.question,"answer":req.body.vote});
+/*  console.log(req);*/
+  Poll.findOneAndUpdate(
+    { // conditions
+      "question": req.query.q,
+      "answer.answer": req.query.a
+    },
+    { // update
+        "$inc": { "answer.$.votes": 1 }
+    },
+    { // options
+      "new": true // Return the updated document
+    },
+    function (err, poll)
+    {
+      if (err) {
+        res.json({"error": "Internal server error"});
+        return console.error(err);
+      }
+      if (!poll) {
+        res.json({"error": "Answer not found."});
+      } else {
+        res.json({"question": poll.question, "answer": poll.answer});
+      }
+    }
+  );
 });
+
 app.delete('/api/delete', function(req, res) {
-  console.log(req);
-  /*Poll.find(function (err, polls) {
-    if (err) return console.error(err);
-    console.log(polls);
-    res.json({test:"test"});
-  });*/
-  res.json({test:"delete","question":req.body.question});
+  // !!! Check if the user is authenticated and it's their poll
+  Poll.findOneAndRemove({"question": req.query.q}, function (err, poll) {
+    if (err) {
+      res.json({"error": "Internal server error"});
+      return console.error(err);
+    }
+    if (!poll) {
+      res.json({error:"Poll not found."});
+    } else {
+      res.json(mapPollToJSON(poll));
+    }
+  });
 });
 // !!! user is authenticated
 

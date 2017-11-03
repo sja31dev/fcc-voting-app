@@ -1,0 +1,113 @@
+{
+	"variables": [],
+	"info": {
+		"name": "fcc-voting-app",
+		"_postman_id": "32eb3dbb-1d06-2046-a4ed-3b9b236be819",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getAllPolls",
+			"request": {
+				"url": "http://localhost:5000/api/getpoll",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getOnePoll",
+			"request": {
+				"url": {
+					"raw": "http://localhost:5000/api/getpoll?q=question 1?",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"getpoll"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "question 1?",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "newPoll",
+			"request": {
+				"url": "http://localhost:5000/api/newPoll",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"question\":\"Where am I?\",\n\t\"answer\":[\"here\", \"there\", \"everywhere\"]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "vote",
+			"request": {
+				"url": "http://localhost:5000/api/vote",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"question\":\"Where am I?\",\n\t\"vote\": \"there\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"url": "http://localhost:5000/api/delete",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"question\":\"Where am I?\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

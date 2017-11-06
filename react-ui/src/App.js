@@ -26,7 +26,8 @@ const allPolls = [
         "answer": "there too",
         "votes": 6
       }
-    ]
+    ],
+    "id": 53
   },
   {
     "question": "Where am I now?",
@@ -43,7 +44,8 @@ const allPolls = [
         "answer": "everywhere",
         "votes": 3
       }
-    ]
+    ],
+    "id": 99
   }
 ];
 
@@ -52,19 +54,19 @@ class App extends Component {
   render() {
     return (
       <div className="App container">
-        <h1>Voting App</h1>
+        <h1 className="text-center">Voting App</h1>
 
-        <h3>New Poll</h3>
+        <h3 className="sect-title">New Poll</h3>
         <NewPoll />
 
-        <h3>Poll</h3>
+        <h3 className="sect-title">Poll</h3>
         <Poll poll={allPolls[0]}/>
 
-        <h3>My Polls</h3>
-        <PollList polls={allPolls} />
+        <h3 className="sect-title">My Polls</h3>
+        <PollList polls={allPolls} key="myPolls" />
 
-        <h3>All Polls</h3>
-        <PollList polls={allPolls} />
+        <h3 className="sect-title">All Polls</h3>
+        <PollList polls={allPolls} key = "allPolls" />
 
         <Footer />
       </div>

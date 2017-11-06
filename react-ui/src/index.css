@@ -22,3 +22,15 @@ body {
   z-index: 50;
   font-size: 0.8rem;
 }
+
+.poll-answer-vote {
+  padding: 0.3rem
+}
+
+.vote-panel {
+  padding-top: 0.7rem;
+}
+
+.sect-title {
+  padding-top: 1rem;
+}

@@ -34,7 +34,7 @@ const mapPollToJSON = ((p) => {
   var answer = p.answer.map((a) => {
     return {"answer": a.answer, "votes": a.votes};
   });
-  return {"question": p.question, "answer": answer};
+  return {"question": p.question, "answer": answer, "id": p._id};
 });
 
 app.get('/api/getpoll', function(req, res) {
@@ -238,15 +238,15 @@ app.get('/test', function(req, res) {
 // END OF USER AAUTHENTICATION
 
 // Static files
-//app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
+app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
 // Remaining requests return the React app
-/*app.get('*', function(req, res) {
-  res.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
-});*/
 app.get('*', function(req, res) {
-  res.sendFile(path.resolve(__dirname, 'views', 'index.html'));
+  res.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
 });
+/*app.get('*', function(req, res) {
+  res.sendFile(path.resolve(__dirname, 'views', 'index.html'));
+});*/
 
 app.listen(PORT, function() {
   console.log(`Listening on port ${PORT}`);

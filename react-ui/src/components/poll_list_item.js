@@ -28,7 +28,8 @@ const PollListItem = ({poll, onPollSelect}) => {
         style={{"width": percent + "%", "backgroundColor":color}}
         aria-valuenow={percent}
         aria-valuemin="0"
-        aria-valuemax="100">
+        aria-valuemax="100"
+        key={answer.answer}>
 
       </div>
 

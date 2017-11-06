@@ -20,11 +20,11 @@ const allPolls = [
       },
       {
         "answer": "nowhere",
-        "votes": 0
+        "votes": 4
       },
       {
         "answer": "there too",
-        "votes": 0
+        "votes": 6
       }
     ]
   },
@@ -33,15 +33,15 @@ const allPolls = [
     "answer": [
       {
         "answer": "here",
-        "votes": 0
+        "votes": 1
       },
       {
         "answer": "there",
-        "votes": 0
+        "votes": 2
       },
       {
         "answer": "everywhere",
-        "votes": 0
+        "votes": 3
       }
     ]
   }
@@ -58,7 +58,7 @@ class App extends Component {
         <NewPoll />
 
         <h3>Poll</h3>
-        <Poll />
+        <Poll poll={allPolls[0]}/>
 
         <h3>My Polls</h3>
         <PollList polls={allPolls} />

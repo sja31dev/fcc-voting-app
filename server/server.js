@@ -75,6 +75,8 @@ app.put('/api/newpoll', function(req, res) {
       console.log(polls);
       if (polls.length !== 0) {
         res.json({error:"That question already exists."});
+      } else if (req.body.answer < 2) {
+        res.json({error:"At lease two answers must be defined."});
       } else {
         var answer = req.body.answer.map((a) => {
           return {

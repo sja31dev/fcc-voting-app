@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PollListItem = ({poll, onPollSelect}) => {
+const PollListItem = ({poll, onPollSelect, onPollDelete}) => {
 
   const colors = [
     "#4D4D4D",// (gray)
@@ -39,8 +39,21 @@ const PollListItem = ({poll, onPollSelect}) => {
   return (
     <li onClick={() => onPollSelect(poll)} className='list-group-item'>
       <div className='poll-list'>
-        <div className='poll-list-title'>
-          <h5>{poll.question}</h5>
+        <div className='row'>
+          <div className='poll-list-title col'>
+            <h5>{poll.question}</h5>
+          </div>
+          {
+            // Delete link if theres a delete handler
+            onPollDelete
+              ? (<button
+                  type="button"
+                  className="btn btn-danger btn-sml"
+                  onClick={(e) => {e.stopPropagation(); onPollDelete(poll)}}>
+                  delete
+                </button>)
+              : null
+          }
         </div>
         <div className='poll-list-answers'>
           <div className="progress">

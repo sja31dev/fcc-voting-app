@@ -7,6 +7,7 @@ const PollList = (props) => {
     return (
       <PollListItem
         onPollSelect={props.onPollSelect}
+        onPollDelete={props.onPollDelete}
         key={poll.id}
         poll={poll} />
     );

@@ -70,6 +70,10 @@ const myPolls = [
   }
 ];
 
+const fetchHeaders = {
+  'Accept': 'application/json',
+  'Content-Type': 'application/json'
+};
 
 class App extends Component {
   constructor(props) {
@@ -92,7 +96,7 @@ class App extends Component {
   vote(question, answer) {
     console.log("Vote! Q: " + question + " A: " + answer);
     const url = "/api/vote?q=" + question + "&a=" + answer;
-    fetch(url, {method: 'put'})
+    fetch(url, {method: 'put', headers: fetchHeaders})
     .then(results => {
       return results.json();
     }).then( data => {
@@ -113,6 +117,7 @@ class App extends Component {
     fetch('/api/newpoll',
       {
         method: 'put',
+        headers: fetchHeaders,
         body: JSON.stringify({
           question: question,
           answer: answers
@@ -135,7 +140,7 @@ class App extends Component {
   }
 
   getAllPolls () {
-    fetch("/api/getpoll")
+    fetch("/api/getpoll", {headers: fetchHeaders})
     .then(results => {
       return results.json();
     }).then( data => {

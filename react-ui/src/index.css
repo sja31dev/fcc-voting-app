@@ -51,3 +51,8 @@ body {
   text-align: center;
   display: block;
 }
+
+// Fix the margin of the delete answer button
+.input-group-btn>button.btn.btn-danger {
+    margin: 0px;
+}

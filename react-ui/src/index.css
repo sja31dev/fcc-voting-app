@@ -44,3 +44,10 @@ body {
   padding: 0.03rem 0.08rem;
   font-size: 0.8rem;
 }
+
+.progress-bar {
+  text-shadow: 1px 1px 10px black;
+  overflow: hidden;
+  text-align: center;
+  display: block;
+}

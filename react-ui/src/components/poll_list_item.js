@@ -30,9 +30,8 @@ const PollListItem = ({poll, onPollSelect, onPollDelete}) => {
         aria-valuemin="0"
         aria-valuemax="100"
         key={answer.answer}>
-
+        {answer.answer}
       </div>
-
     );
   });
 

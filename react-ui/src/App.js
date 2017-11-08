@@ -196,11 +196,11 @@ class App extends Component {
         <div className="text-center">
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn btn-primary btn-normal"
             onClick={() => this.setState({selectedPoll: null, newPollInput: true})}>
             Add Poll
           </button>
-          <button type="button" className="btn btn-primary">Log in</button> / welcome user
+          <button type="button" className="btn btn-primary btn-normal">Log in</button> / welcome user
         </div>
 
         {this.pollDisplay()}

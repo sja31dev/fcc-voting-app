@@ -1,58 +1,8 @@
+
+
 body {
   margin: 0;
   padding: 0;
   padding-bottom: 60px;
   font-family: sans-serif;
-}
-
-.list-group-item {
-  cursor: pointer;
-}
-
-.list-group-item:hover {
-  background-color: #eee;
-}
-
-.footer {
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  /*height: 100px;*/
-  background-color: #f5f5f5;
-  z-index: 50;
-  font-size: 0.8rem;
-}
-
-.poll-answer-vote {
-  padding: 0.3rem
-}
-
-.vote-panel {
-  padding-top: 0.7rem;
-}
-
-.sect-title {
-  padding-top: 1rem;
-}
-
-.btn {
-  padding: 0.1rem 0.3rem;
-  margin: 0.2rem;
-}
-
-.btn-sml {
-  padding: 0.03rem 0.08rem;
-  font-size: 0.8rem;
-}
-
-.progress-bar {
-  text-shadow: 1px 1px 10px black;
-  overflow: hidden;
-  text-align: center;
-  display: block;
-}
-
-// Fix the margin of the delete answer button
-.input-group-btn>button.btn.btn-danger {
-    margin: 0px;
 }

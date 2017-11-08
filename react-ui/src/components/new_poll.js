@@ -55,7 +55,7 @@ class NewPoll extends Component {
             onChange={event => this.onAnswerChange(idx, event.target.value)}/>
           <span className="input-group-btn">
             <button
-              className="btn btn-secondary"
+              className="btn btn-danger"
               type="button"
               onClick={() => this.onDeleteAnswer(idx)}>
               x
@@ -80,12 +80,14 @@ class NewPoll extends Component {
                 onChange={event => this.onQuestionChange(event.target.value)}/>
             </div>
             <div className="form-group">
-              <label htmlFor="answer1" className="col-form-label">Answers</label>
+              <label htmlFor="answer1" className="col-form-label">
+                Answers
+                <button type="button" className="btn btn-primary btn-normal" onClick={() => this.onAddAnswer()}>Add Answer</button>
+              </label>
               {answers}
             </div>
-            <button type="button" className="btn btn-primary" onClick={() => this.onAddAnswer()}>Add Answer</button>
-            <button type="button" className="btn btn-danger" onClick={() => this.onCancelNewPoll()}>Cancel</button>
-            <button type="button" className="btn btn-primary" onClick={() => this.onSubmitNewPoll()}>Create Poll</button>
+            <button type="button" className="btn btn-danger btn-normal" onClick={() => this.onCancelNewPoll()}>Cancel</button>
+            <button type="button" className="btn btn-primary btn-normal" onClick={() => this.onSubmitNewPoll()}>Create Poll</button>
           </form>
         </div>
       </div>

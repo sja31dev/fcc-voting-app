@@ -108,14 +108,14 @@ class App extends Component {
     console.log("New Poll! Q: " + question + " A: " + answers);
     console.log(JSON.stringify({
       question: question,
-      answers: answers
+      answer: answers
     }));
     fetch('/api/newpoll',
       {
         method: 'put',
         body: JSON.stringify({
           question: question,
-          answers: answers
+          answer: answers
         })
       })
     .then(results => {

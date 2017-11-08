@@ -76,24 +76,84 @@ class App extends Component {
     super(props);
 
     this.state = {
-      allPolls: allPolls, // !!! Sohuld be []
-      myPolls: myPolls, // !!! should be []
+      allPolls: null,//allPolls, // !!! Sohuld be []
+      myPolls: null,//myPolls, // !!! should be []
       selectedPoll: null,
       newPollInput: false
     }
   }
 
+  componentDidMount() {
+    console.log("did mount");
+
+    this.getAllPolls();
+  }
+
   vote(question, answer) {
     console.log("Vote! Q: " + question + " A: " + answer);
+    const url = "/api/vote?q=" + question + "&a=" + answer;
+    fetch(url, {method: 'put'})
+    .then(results => {
+      return results.json();
+    }).then( data => {
+      if (data.error) {
+        alert(data.error)
+      } else {
+        this.getAllPolls();
+      }
+    });
   }
 
   newPoll(question, answers) {
     console.log("New Poll! Q: " + question + " A: " + answers);
-    this.setState({newPollInput: false})
+    console.log(JSON.stringify({
+      question: question,
+      answers: answers
+    }));
+    fetch('/api/newpoll',
+      {
+        method: 'put',
+        body: JSON.stringify({
+          question: question,
+          answers: answers
+        })
+      })
+    .then(results => {
+      return results.json();
+    }).then( data => {
+      if (data.error) {
+        alert(data.error)
+      } else {
+        this.setState({newPollInput: false})
+        this.getAllPolls();
+      }
+    });
   }
 
   deletePoll(poll) {
     console.log("Delete! Q: " + poll.question);
+  }
+
+  getAllPolls () {
+    fetch("/api/getpoll")
+    .then(results => {
+      return results.json();
+    }).then( data => {
+      if (data.error) {
+        alert(data.error)
+      } else {
+        this.setState({allPolls: data});
+        // update poll display
+        if (this.state.selectedPoll && this.state.allPolls) {
+          for (var i = 0; i < this.state.allPolls.length; i++) {
+            if (this.state.selectedPoll.question === this.state.allPolls[i].question) {
+              this.setState({selectedPoll: this.state.allPolls[i]});
+              break;
+            }
+          }
+        }
+      }
+    });
   }
 
   // COnvert this to a component ?

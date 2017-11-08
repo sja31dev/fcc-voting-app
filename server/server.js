@@ -5,6 +5,7 @@ const session = require('express-session');
 const MemoryStore = require('memorystore')(session);
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
 var passportGithub = require('./auth/github');
 var passportTwitter = require('./auth/twitter');
@@ -23,8 +24,13 @@ const PORT = process.env.PORT || 5000;
 
 var Schema = mongoose.Schema;
 
+
 // API
 app.use(bodyParser.json());
+
+app.use(morgan('combined'));
+
+
 app.get('/api/test', function(req, res) {
   console.log(req);
   res.json({test:"test"});
@@ -63,6 +69,7 @@ app.get('/api/getpoll', function(req, res) {
 });
 
 app.put('/api/newpoll', function(req, res) {
+  console.log(req.body);
   if (req.body && req.body.question && req.body.answer) {
     // !!! Check if the user is authenticated
 

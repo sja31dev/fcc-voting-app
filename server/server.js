@@ -180,22 +180,6 @@ app.delete('/api/delete', function(req, res) {
 });
 // !!! user is authenticated
 
-// USER AUTHINTICATION
-// express-session and passport middleware
-app.use(session({
-  secret: 'iowhefiysdg0wpiej',
-  resave: true,
-  saveUninitialized: true,
-  store: new MemoryStore({
-    checkPeriod: 86400000, // prune expired entries every 24h
-    max: 100 // Maximum 100 entries
-  }),
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-
-// *** mongoose *** //
-mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 
 // ROUTES
 
@@ -242,9 +226,32 @@ app.get('/login', function(req, res, next) {
 app.get('/test', function(req, res) {
   res.sendFile(process.cwd() + '/server/views/index.html');
 });
+// USER AUTHINTICATION
+// express-session and passport middleware
+app.use(session({
+  secret: 'iowhefiysdg0wpiej',
+  resave: true,
+  saveUninitialized: true,
+  store: new MemoryStore({
+    checkPeriod: 86400000, // prune expired entries every 24h
+    max: 100 // Maximum 100 entries
+  }),
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
+// *** mongoose *** //
+mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 
-// END OF USER AAUTHENTICATION
+function isUserLoggedIn(req, res, next) {
+  if (req.user) {
+    console.log('User "' + req.user + '" logged in ');
+    return next();
+  }
+  return res.status(401).json({error: 'User not logged in'});
+};
+
+// END OF USER AUTHENTICATION
 
 // Static files
 app.use(express.static(path.resolve(__dirname, '../react-ui/build')));

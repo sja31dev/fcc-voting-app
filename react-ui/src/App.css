@@ -50,6 +50,10 @@
   font-size: 0.8rem;
 }
 
+.btn-login {
+  width: 10rem;
+}
+
 .input-group-btn>.btn {
   padding: 0.1rem 0.3rem;
 }

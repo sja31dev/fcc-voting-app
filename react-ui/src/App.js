@@ -6,70 +6,6 @@ import NewPoll from './components/new_poll';
 import PollList from './components/poll_list';
 import Footer from './components/footer';
 
-const allPolls = [
-  {
-    "question": "Where am I?",
-    "answer": [
-      {
-        "answer": "here",
-        "votes": 2
-      },
-      {
-        "answer": "there",
-        "votes": 1
-      },
-      {
-        "answer": "nowhere",
-        "votes": 4
-      },
-      {
-        "answer": "there too",
-        "votes": 6
-      }
-    ],
-    "id": 53
-  },
-  {
-    "question": "Where am I now?",
-    "answer": [
-      {
-        "answer": "here",
-        "votes": 1
-      },
-      {
-        "answer": "there",
-        "votes": 2
-      },
-      {
-        "answer": "everywhere",
-        "votes": 3
-      }
-    ],
-    "id": 99
-  }
-];
-const myPolls = [
-
-  {
-    "question": "Where am I now?",
-    "answer": [
-      {
-        "answer": "here",
-        "votes": 1
-      },
-      {
-        "answer": "there",
-        "votes": 2
-      },
-      {
-        "answer": "everywhere",
-        "votes": 3
-      }
-    ],
-    "id": 99
-  }
-];
-
 const fetchHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json'
@@ -83,7 +19,8 @@ class App extends Component {
       allPolls: null,//allPolls, // !!! Sohuld be []
       myPolls: null,//myPolls, // !!! should be []
       selectedPoll: null,
-      newPollInput: false
+      newPollInput: false,
+      authenticated: false
     }
   }
 
@@ -149,13 +86,18 @@ class App extends Component {
       } else {
         this.setState({allPolls: data});
         // update poll display
-        if (this.state.selectedPoll && this.state.allPolls) {
-          for (var i = 0; i < this.state.allPolls.length; i++) {
-            if (this.state.selectedPoll.question === this.state.allPolls[i].question) {
-              this.setState({selectedPoll: this.state.allPolls[i]});
-              break;
+        if (this.state.selectedPoll) {
+          const selectedQ = this.state.selectedPoll.question;
+          fetch("/api/getpoll?q=" + selectedQ, {headers: fetchHeaders})
+          .then(results => {
+            return results.json();
+          }).then( data => {
+            if (data.error) {
+              alert(data.error)
+            } else {
+              this.setState({selectedPoll: data});
             }
-          }
+          });
         }
       }
     });
@@ -200,7 +142,11 @@ class App extends Component {
             onClick={() => this.setState({selectedPoll: null, newPollInput: true})}>
             Add Poll
           </button>
-          <button type="button" className="btn btn-primary btn-normal">Log in</button> / welcome user
+
+          <a className="btn btn-primary btn-normal btn-login" href="/auth/facebook">Log in - Facebook</a>
+          <a className="btn btn-primary btn-normal btn-login" href="/auth/twitter">Log in - Twitter</a>
+          <a className="btn btn-primary btn-normal btn-login" href="/auth/github">Log in - Github</a>
+           / welcome user
         </div>
 
         {this.pollDisplay()}

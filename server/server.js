@@ -247,7 +247,7 @@ app.get('/test', function(req, res) {
 // END OF USER AAUTHENTICATION
 
 // Static files
-app.use('/*', express.static(path.resolve(__dirname, '../react-ui/build')));
+app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
 // Remaining requests return the React app
 /*app.get('*', function(req, res) {

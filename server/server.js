@@ -257,7 +257,7 @@ function isUserLoggedIn(req, res, next) {
 app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
 // Remaining requests return the React app
-app.get('*', function(req, res) {
+app.get('/', function(req, res) {
   res.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
 });
 /*app.get('*', function(req, res) {

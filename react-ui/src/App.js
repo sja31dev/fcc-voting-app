@@ -133,37 +133,48 @@ class App extends Component {
   render() {
     return (
       <div className="App container">
-        <h1 className="text-center">Voting App</h1>
+        <div className="row">
+          <div className="col"></div>
+          <div className="col-md-12 col-lg-8">
+            <h1 className="text-center">Voting App</h1>
 
-        <div className="text-center">
-          <button
-            type="button"
-            className="btn btn-primary btn-normal"
-            onClick={() => this.setState({selectedPoll: null, newPollInput: true})}>
-            Add Poll
-          </button>
+            <div className="text-center">
+              <button
+                type="button"
+                className="btn btn-primary btn-normal"
+                onClick={() => this.setState({selectedPoll: null, newPollInput: true})}>
+                Add Poll
+              </button>
 
-          <a className="btn btn-primary btn-normal btn-login" href="/auth/facebook">Log in - Facebook</a>
-          <a className="btn btn-primary btn-normal btn-login" href="/auth/twitter">Log in - Twitter</a>
-          <a className="btn btn-primary btn-normal btn-login" href="/auth/github">Log in - Github</a>
-           / welcome user
-        </div>
+              {/*}<a className="btn btn-primary btn-normal btn-login" href="/auth/facebook">Log in - Facebook</a>
+              <a className="btn btn-primary btn-normal btn-login" href="/auth/twitter">Log in - Twitter</a>
+              <a className="btn btn-primary btn-normal btn-login" href="/auth/github">Log in - Github</a>
+               / welcome user*/}
+            </div>
 
-        {this.pollDisplay()}
+            {this.pollDisplay()}
 
-        <h3 className="sect-title">All Polls</h3>
-        <PollList
-          polls={this.state.allPolls}
-          onPollSelect={selectedPoll => this.setState({selectedPoll: selectedPoll, newPollInput: false})}
-          key="allPolls" />
+            <h3 className="sect-title">All Polls</h3>
+            <PollList
+              polls={this.state.allPolls}
+              onPollSelect={selectedPoll => this.setState({selectedPoll: selectedPoll, newPollInput: false})}
+              key="allPolls" />
 
-        <h3 className="sect-title">My Polls</h3>
-        <PollList
-          polls={this.state.myPolls}
-          onPollSelect={poll => this.setState({selectedPoll: poll, newPollInput: false})}
-          onPollDelete={poll => this.deletePoll(poll)}
-          key="myPolls" />
-
+            {!!this.state.myPolls
+              ? (
+                <div>
+                  <h3 className="sect-title">My Polls</h3>
+                  <PollList
+                    polls={this.state.myPolls}
+                    onPollSelect={poll => this.setState({selectedPoll: poll, newPollInput: false})}
+                    onPollDelete={poll => this.deletePoll(poll)}
+                    key="myPolls" />
+                </div>
+                )
+              : null }
+            </div>
+            <div className="col"></div>
+          </div>
         <Footer />
       </div>
     );

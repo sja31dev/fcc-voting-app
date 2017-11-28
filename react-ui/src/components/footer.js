@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PollListItem = ({poll, onPollSelect}) => {
+const Footer = ({poll, onPollSelect}) => {
 
   //const imageUrl = video.snippet.thumbnails.default.url;
 
@@ -13,4 +13,4 @@ const PollListItem = ({poll, onPollSelect}) => {
   );
 };
 
-export default PollListItem;
+export default Footer;

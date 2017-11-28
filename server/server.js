@@ -6,6 +6,7 @@ const MemoryStore = require('memorystore')(session);
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 
 var passportGithub = require('./auth/github');
 var passportTwitter = require('./auth/twitter');
@@ -25,10 +26,17 @@ const PORT = process.env.PORT || 5000;
 var Schema = mongoose.Schema;
 
 
-// API
+// Static files
+app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
+
+app.use(cookieParser());
+app.use(bodyParser());
+
 app.use(bodyParser.json());
 
 app.use(morgan('combined'));
+
+// API
 
 
 app.get('/api/test', function(req, res) {
@@ -68,7 +76,7 @@ app.get('/api/getpoll', function(req, res) {
   }
 });
 
-app.put('/api/newpoll', function(req, res) {
+app.put('/api/newpoll', isUserLoggedIn, function(req, res) {
   console.log(req.body);
   if (req.body && req.body.question && req.body.answer) {
     // !!! Check if the user is authenticated
@@ -109,7 +117,7 @@ app.put('/api/newpoll', function(req, res) {
   }
 });
 
-app.put('/api/addanswer', function(req, res) {
+app.put('/api/addanswer', isUserLoggedIn, function(req, res) {
 /*  console.log(req);*/
   Poll.findOneAndUpdate(
     { // conditions
@@ -164,7 +172,7 @@ app.put('/api/vote', function(req, res) {
   );
 });
 
-app.delete('/api/delete', function(req, res) {
+app.delete('/api/delete', isUserLoggedIn, function(req, res) {
   // !!! Check if the user is authenticated and it's their poll
   Poll.findOneAndRemove({"question": req.query.q}, function (err, poll) {
     if (err) {
@@ -178,54 +186,8 @@ app.delete('/api/delete', function(req, res) {
     }
   });
 });
-// !!! user is authenticated
 
 
-// ROUTES
-
-//GITHUB
-app.get('/auth/github', passportGithub.authenticate('github', { scope: [ 'user:email' ] }));
-app.get('/auth/github/callback',
-  passportGithub.authenticate('github', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication
-    // Explicitly save the session before responding! (see https://github.com/jaredhanson/passport/issues/482)
-    req.session.save(() => {
-      res.json(req.user);
-    });
-  });
-
-//TWITTER
-app.get('/auth/twitter', passportTwitter.authenticate('twitter'));
-app.get('/auth/twitter/callback',
-  passportTwitter.authenticate('twitter', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication
-    // Explicitly save the session before responding! (see https://github.com/jaredhanson/passport/issues/482)
-    req.session.save(() => {
-      res.json(req.user);
-    });
-  });
-
-//FACEBOOK
-app.get('/auth/facebook', passportFacebook.authenticate('facebook'));
-app.get('/auth/facebook/callback',
-  passportFacebook.authenticate('facebook', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication
-    // Explicitly save the session before responding! (see https://github.com/jaredhanson/passport/issues/482)
-    req.session.save(() => {
-      res.json(req.user);
-    });
-  });
-
-app.get('/login', function(req, res, next) {
-  res.send('Go back and register!');
-});
-
-app.get('/test', function(req, res) {
-  res.sendFile(process.cwd() + '/server/views/index.html');
-});
 // USER AUTHINTICATION
 // express-session and passport middleware
 app.use(session({
@@ -235,10 +197,69 @@ app.use(session({
   store: new MemoryStore({
     checkPeriod: 86400000, // prune expired entries every 24h
     max: 100 // Maximum 100 entries
-  }),
+  })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// ROUTES
+
+//GITHUB
+app.get('/auth/github', passportGithub.authenticate('github', { scope: [ 'user:email' ] }));
+app.get('/auth/github/callback',
+  passportGithub.authenticate('github', { failureRedirect: '/loginFail' }),
+  function(req, res) {
+    // Successful authentication
+    // Explicitly save the session before responding! (see https://github.com/jaredhanson/passport/issues/482)
+    req.session.save(() => {
+      //res.json(req.user);
+      res.redirect('/');
+    });
+  });
+
+//TWITTER
+app.get('/auth/twitter', passportTwitter.authenticate('twitter'));
+app.get('/auth/twitter/callback',
+  passportTwitter.authenticate('twitter', { failureRedirect: '/loginFail' }),
+  function(req, res) {
+    // Successful authentication
+    // Explicitly save the session before responding! (see https://github.com/jaredhanson/passport/issues/482)
+    req.session.save(() => {
+      //res.json(req.user);
+      res.redirect('/');
+    });
+  });
+
+//FACEBOOK
+app.get('/auth/facebook', passportFacebook.authenticate('facebook'));
+app.get('/auth/facebook/callback',
+  passportFacebook.authenticate('facebook', { failureRedirect: '/loginFail' }),
+  function(req, res) {
+    // Successful authentication
+    // Explicitly save the session before responding! (see https://github.com/jaredhanson/passport/issues/482)
+    req.session.save(() => {
+      //res.json(req.user);
+      res.redirect('/');
+    });
+  });
+
+app.get('/loginFail', function(req, res, next) {
+  res.send('Login Failed. please go back and try again!');
+});
+
+app.get('/test', function(req, res) {
+  res.sendFile(process.cwd() + '/server/views/index.html');
+});
+
+app.get('/api/loggedin', function(req, res) {
+  if (req.user) {
+    console.log('User "' + req.user + '" logged in ');
+    res.json({authenticated:'true'});
+  } else {
+    console.log('User NOT logged in ');
+    res.json({authenticated:'false'});
+  }
+});
 
 // *** mongoose *** //
 mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
@@ -252,9 +273,6 @@ function isUserLoggedIn(req, res, next) {
 };
 
 // END OF USER AUTHENTICATION
-
-// Static files
-app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
 // Remaining requests return the React app
 app.get('/', function(req, res) {

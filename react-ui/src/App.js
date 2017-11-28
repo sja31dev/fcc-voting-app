@@ -21,13 +21,14 @@ class App extends Component {
       selectedPoll: null,
       newPollInput: false,
       authenticated: false
-    }
+    };
   }
 
   componentDidMount() {
-    console.log("did mount");
-
+    
     this.getAllPolls();
+
+    this.getLoggedIn();
   }
 
   vote(question, answer) {
@@ -103,12 +104,11 @@ class App extends Component {
     });
   }
 
-  // COnvert this to a component ?
   pollDisplay = (() => {
     if (this.state.selectedPoll) {
       return (
         <div>
-          <h3 className="sect-title">Poll</h3>
+          <h3 className="sect-title" id="poll">Poll</h3>
           <Poll
             poll={this.state.selectedPoll}
             onVoteSelect={(question, answer) => this.vote(question, answer)} />
@@ -130,6 +130,20 @@ class App extends Component {
     }
   });
 
+  getLoggedIn () {
+    fetch("/api/loggedIn", {headers: fetchHeaders, credentials: 'include'})
+    .then(results => {
+      return results.json();
+    }).then( data => {
+      if (data.error) {
+        alert(data.error)
+      } else {
+        this.setState({authenticated: (data.authenticated == 'true')});
+
+      }
+    });
+  }
+
   render() {
     return (
       <div className="App container">
@@ -138,19 +152,29 @@ class App extends Component {
           <div className="col-md-12 col-lg-8">
             <h1 className="text-center">Voting App</h1>
 
-            <div className="text-center">
-              <button
-                type="button"
-                className="btn btn-primary btn-normal"
-                onClick={() => this.setState({selectedPoll: null, newPollInput: true})}>
-                Add Poll
-              </button>
 
-              {/*}<a className="btn btn-primary btn-normal btn-login" href="/auth/facebook">Log in - Facebook</a>
-              <a className="btn btn-primary btn-normal btn-login" href="/auth/twitter">Log in - Twitter</a>
-              <a className="btn btn-primary btn-normal btn-login" href="/auth/github">Log in - Github</a>
-               / welcome user*/}
-            </div>
+
+            {
+              this.state.authenticated
+              ? (
+                <div className="text-center">
+                  <div>Welcome</div>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-normal"
+                    onClick={() => this.setState({selectedPoll: null, newPollInput: true})}>
+                    Add Poll
+                  </button>
+                  /* !!!Logout button? */
+                </div>)
+              : (
+                <div className="text-center">
+                  <a className="btn btn-primary btn-normal btn-login" href="/auth/facebook">Log in - Facebook</a>
+                  <a className="btn btn-primary btn-normal btn-login" href="/auth/twitter">Log in - Twitter</a>
+                  <a className="btn btn-primary btn-normal btn-login" href="/auth/github">Log in - Github</a>
+                </div>
+              )
+            }
 
             {this.pollDisplay()}
 
